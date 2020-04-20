@@ -1,0 +1,47 @@
+import xlrd
+import numpy as np
+import matplotlib.pyplot as plt
+s1='50_Startups.xlsx'
+wb=xlrd.open_workbook(s1,'rb')
+sheet=wb.sheet_by_index(0)
+y=[]
+x=[[],[],[],[],[]]
+yx=[]
+for i in range(1,sheet.nrows):
+    y.append(sheet.cell_value(i,5))
+    yx.append(0)
+    x[1].append(sheet.cell_value(i,1))
+    x[2].append(sheet.cell_value(i,2))
+    x[3].append(sheet.cell_value(i,3))
+    x[0].append(1)
+    if(sheet.cell_value(i,4)=='New York'):
+        x[4].append(3)
+    elif(sheet.cell_value(i,4)=='California'):
+        x[4].append(1)
+    else:
+        x[4].append(2)
+x=np.matrix(x)
+y=np.matrix(y)
+y1=np.ndarray.transpose(y)
+xt=np.ndarray.transpose(x)
+z=x*xt
+p=x*y1
+z=np.linalg.inv(z)
+f=z*p
+f=np.array(f,dtype=float)
+for i in range(1,sheet.nrows):
+    c=0
+    c=f[0]+(f[1]*sheet.cell_value(i,1))+(f[2]*sheet.cell_value(i,2))
+    c+=(f[3]*sheet.cell_value(i,3))
+    if(sheet.cell_value(i,4)=='New York'):
+        c+=f[4]*3
+    elif(sheet.cell_value(i,4)=='California'):
+        c+=f[4]*1
+    else:
+        c+=f[4]*2
+    yx[i-1]=c
+y=np.ndarray.transpose(y)
+yx=np.array(yx,dtype=float)
+plt.plot(yx)
+plt.plot(y)
+plt.show()

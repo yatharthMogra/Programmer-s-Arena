@@ -14,7 +14,7 @@ for i in range(1,sheet.nrows):
     y.append(sheet.cell_value(i,5))
 for i in range(1,sheet.nrows):
     if(sheet.cell_value(i,4)=='New York'):
-        x4.append(0)
+        x4.append(3)
     elif(sheet.cell_value(i,4)=='California'):
         x4.append(1)
     elif(sheet.cell_value(i,4)=='Florida'):
@@ -29,8 +29,8 @@ b1=1000
 b2=1000
 b3=1000
 b4=1000
-k=0.000000000001
-count=20000
+k=0.00000000001
+count=10000
 j=0
 while(count>0):
     count-=1
@@ -61,4 +61,20 @@ while(count>0):
         j+=(h-y[i])*x4[i];
     b4=a4-k*(j/len(x1))
     j=0
-print(a0,a1,a2,a3,a4)
+yx=[]
+print(a0+(a1*78389.47)+(a2*153773.4)+(a3*299737.3)+(a4*0))
+for i in range(1,sheet.nrows):
+    c=0
+    c=a0+(a1*sheet.cell_value(i,1))+(a2*sheet.cell_value(i,2))
+    c+=(a3*sheet.cell_value(i,3))
+    if(sheet.cell_value(i,4)=='New York'):
+        c+=a4*3
+    elif(sheet.cell_value(i,4)=='California'):
+        c+=a4*1
+    else:
+        c+=a4*2
+    yx.append(c)
+import matplotlib.pyplot as plt
+plt.plot(yx)
+plt.plot(y)
+plt.show()

@@ -1,0 +1,119 @@
+import xlrd
+import math
+import numpy as np
+s1 = 'train.xlsx'
+wb=xlrd.open_workbook(s1)
+sheet = wb.sheet_by_index(0)
+s2= 'test.xlsx'
+wb1=xlrd.open_workbook(s2)
+sheet1 = wb1.sheet_by_index(0)
+x=[[],[],[],[],[],[],[],[]]
+y=[]
+age=29.69912
+for i in range(1,sheet.nrows):
+    y.append(sheet.cell_value(i,1))
+    x[7].append(1)
+    x[0].append(sheet.cell_value(i,2))
+    if(sheet.cell_value(i,4)=='male'):
+        x[1].append(1)
+    else:
+        x[1].append(2)
+    if(sheet.cell_value(i,5)!=''):
+        x[2].append(sheet.cell_value(i,5))
+    else:
+        x[2].append(age)
+    x[3].append(sheet.cell_value(i,6))
+    x[4].append(sheet.cell_value(i,7))
+    x[5].append(sheet.cell_value(i,9))
+    if(sheet.cell_value(i,11)=='S'):
+        x[6].append(1)
+    elif(sheet.cell_value(i,11)=='Q'):
+        x[6].append(2)
+    else:
+        x[6].append(3)
+# comment :: 0'X find karna hai
+a=[1,1,1,1,1,1,1,1]
+x=np.matrix(x,dtype=float)
+y=np.array(y,dtype=float)
+a=np.matrix(a)
+k=0.001
+jp=[]
+b=[0,0,0,0,0,0,0,0]
+b=np.matrix(b,dtype=float)
+count=1100
+while(count>0):
+    count-=1
+    a=b
+    s=np.dot(a,x)
+    j=0
+    for i in range(0,sheet.nrows-1):
+        h=(1/(1+(math.exp(-s[0,i]))))
+        j+=(h-y[i])*x[7,i]
+    b[0,7]=a[0,7]-1*(j/(sheet.nrows-1))
+    j=0
+    for i in range(0,sheet.nrows-1):
+        h=(1/(1+(math.exp(-s[0,i]))))
+        j+=(h-y[i])*x[1,i]
+    b[0,1]=a[0,1]-1.5*(j/(sheet.nrows-1))
+    j=0
+    for i in range(0,sheet.nrows-1):
+        h=(1/(1+(math.exp(-s[0,i]))))
+        j+=(h-y[i])*x[0,i]
+    b[0,0]=a[0,0]-1*(j/(sheet.nrows-1))
+    j=0
+    for i in range(0,sheet.nrows-1):
+        h=(1/(1+(math.exp(-s[0,i]))))
+        j+=(h-y[i])*x[2,i]
+    b[0,2]=a[0,2]-k*(j/(sheet.nrows-1))
+    j=0
+    for i in range(0,sheet.nrows-1):
+        h=(1/(1+(math.exp(-s[0,i]))))
+        j+=(h-y[i])*x[3,i]
+    b[0,3]=a[0,3]-0.4*(j/(sheet.nrows-1))
+    j=0
+    for i in range(0,sheet.nrows-1):
+        h=(1/(1+(math.exp(-s[0,i]))))
+        j+=(h-y[i])*x[4,i]
+    b[0,4]=a[0,4]-0.7*(j/(sheet.nrows-1))
+    j=0
+    for i in range(0,sheet.nrows-1):
+        h=(1/(1+(math.exp(-s[0,i]))))
+        j+=(h-y[i])*x[5,i]
+    b[0,5]=a[0,5]-0.002*(j/(sheet.nrows-1))
+    j=0
+    for i in range(0,sheet.nrows-1):
+        h=(1/(1+(math.exp(-s[0,i]))))
+        j+=(h-y[i])*x[6,i]
+    b[0,6]=a[0,6]-0.62*(j/(sheet.nrows-1))
+dp=[]
+age=30.27259
+fair=35.62719
+for i in range(1,sheet1.nrows):
+    print(i)
+    d=0
+    d+=a[0,7]*1
+    d+=a[0,0]*sheet1.cell_value(i,2)
+    if(sheet1.cell_value(i,4)=='male'):
+        d+=a[0,1]*1
+    else:
+        d+=a[0,1]*2
+    if(sheet1.cell_value(i,5)!=''):
+        d+=a[0,2]*sheet1.cell_value(i,5)
+    else:
+        d+=a[0,2]*age
+    d+=a[0,3]*sheet1.cell_value(i,6)
+    d+=a[0,4]*sheet1.cell_value(i,7)
+    if(sheet1.cell_value(i,9)!=''):
+        d+=a[0,5]*sheet1.cell_value(i,9)
+    else:
+        d+=a[0,5]*fair
+    if(sheet1.cell_value(i,11)=='S'):
+        d+=a[0,6]*1
+    elif(sheet1.cell_value(i,11)=='Q'):
+        d+=a[0,6]*2
+    else:
+        d+=a[0,6]*3
+    if(d>=-0.1):
+        dp.append(1)
+    else:
+        dp.append(0)
